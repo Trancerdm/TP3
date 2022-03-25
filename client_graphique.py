@@ -47,43 +47,35 @@ class MainWindow(QWidget):
 
         self.show()
 
+    def create_url(self,res):
+        openstreetmap_url = "https://www.openstreetmap.org/?mlat=%s&mlon=%s#map=12"%(res["latitude"], res["longitude"])
+        return openstreetmap_url
+
     def on_click(self):
         #Hostname
         hostname = self.text.text()
-
-        if hostname == "":
-            QMessageBox.about(self, "Error", "Please fill the field")
-        else:
-            res = self.__query(hostname, ip, api)
-            if res:
-                self.label2.setText("Answer%s" % (res["hostname fonctionne"]))
-                self.label2.adjustSize()
-                self.show()
-
-        #API
+        ip = self.text3.text()
         api = self.text2.text()
 
-        if api == "":
+        if hostname == "" or ip == "" or api == "":
             QMessageBox.about(self, "Error", "Please fill the field")
         else:
             res = self.__query(hostname, ip, api)
             if res:
-                self.label4.setText("Answer%s" % (res["api fonctionne"]))
+                self.label2.setText("hostname fonctionne")
+                self.label4.setText("api fonctionne")
+                self.label6.setText("ip fonctionne")
+                self.label2.adjustSize()
                 self.label4.adjustSize()
-                self.show()
-
-        #ip
-        ip = self.text3.text()
-
-        if ip == "":
-            QMessageBox.about(self, "Error", "Please fill the field")
-        else:
-            res = self.__query(hostname, ip, api)
-            if res:
-                self.label6.setText("Answer%s" % (res["ip fonctionne"]))
                 self.label6.adjustSize()
                 self.show()
 
+                print(res)
+                openstreetmap_url = "https://www.openstreetmap.org/?mlat="+str(res["latitude"])+"&mlon="+str(res["longitude"])+"#map=12"
+             
+                QDesktopServices.openUrl(QUrl(openstreetmap_url))
+                pass
+                
     #Hostname
     def __query(self, hostname, ip, api):
         url = "http://%s/ip/%s/?key=%s" % (hostname, ip, api)
@@ -92,7 +84,6 @@ class MainWindow(QWidget):
             QMessageBox.about(self, "Error", "Name not found")
         if r.status_code == requests.codes.OK:
             return r.json()
-    
 
 
 if __name__ == "__main__":
